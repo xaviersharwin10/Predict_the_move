@@ -12,6 +12,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import CreateMarket from "@/app/create-market/page";
+import PollCard from "@/components/PollCard";
 
 const tabs = ["Trending"]; // Initially only "Trending" is present
 
@@ -107,7 +108,7 @@ export default function Home() {
                     <CreateMarket />
                   </DialogContent>
                 </Dialog>
-                <p>tweet cards</p>
+       <PollCard/>
               </div>
             )}
 
