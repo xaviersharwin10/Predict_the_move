@@ -1,0 +1,24 @@
+[
+    {
+      "poll": {
+        "author": "Vitalik",
+        "question": "Will the ETH price be above $2,000 at the end of September?",
+        "initialYesAmount": 5800,
+        "initialNoAmount": 4200,
+        "timeLeft": "3 hours"
+      },
+      "feed": [
+        {
+          "author": "Alice",
+          "content": "I think it will!",
+          "time": "2 hours ago"
+        },
+        {
+          "author": "Bob",
+          "content": "No chance.",
+          "time": "1 hour ago"
+        }
+      ]
+    }
+  ]
+  
