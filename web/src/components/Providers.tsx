@@ -20,7 +20,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
-  appName: "Some App",
+  appName: "Trend Sage",
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID || "",
   chains: [
     mainnet,
