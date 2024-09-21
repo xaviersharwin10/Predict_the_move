@@ -1,32 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IMACI {
-    struct Pubkey {
-        uint256 x;
-        uint256 y;
-    }
-    struct TreeDepths 
-    {
-        uint256 intStateTreeDepth;
-        uint256 messageTreeSubDepth;
-        uint256 messageTreeDepth;
-        uint256 voteOptionTreeDepth;
-    }
-    function deployPoll(
-        uint256 _pollDuration,
-        TreeDepths memory treeDepths,
-        Pubkey memory _coordinatorPubkey,
-        address _verifierContractAddress,
-        address _vkRegistryContractAddress,
-        bool _mode
-    ) external returns (address pollContractAddress, address messageProcessorContractAddress, address tallyContractAddress);
-
-     function signup(Pubkey memory _userpubkey, bytes memory _signUpGatekeeperData, bytes memory _initialVoiceCreditProxyData) external;
-}
-
-contract PredictionMarket {
-    address public maciContractAddress;
+contract PredictionMarket_withoutMACI {
     address public platformOwner;
     uint256 public marketCount;
     uint256 public challengePeriod = 5 days;
@@ -34,11 +9,6 @@ contract PredictionMarket {
     uint256 public platformFeePercentage = 2; // 2% platform fee
     uint256 public ownerFeeSharePercentage = 20; // 20% of the platform fee goes to the market owner
     uint256 public curatorFeePercentage = 5; 
-
-    struct Pubkey {
-        uint256 x;
-        uint256 y;
-    }
 
     enum MarketOutcome {
         NotResolved,
@@ -53,7 +23,6 @@ contract PredictionMarket {
         uint256 totalYesVotes;
         uint256 totalNoVotes;
         uint256 totalWinnings;
-        bytes[] encryptedVotes;
         MarketOutcome outcome;
         uint256 endDate;
         uint256 resolvedAt;
@@ -63,9 +32,9 @@ contract PredictionMarket {
         mapping(address => bool) curatorVotes;
         mapping(address => bool) userWinningsClaimed;
         mapping(address => bool) curatorFeeClaimed;  
-        bool ownerFeeClaimed;
-        address[] curatorAddresses; 
+        address[] curatorAddresses; // Array to store curator addresses
         uint256 curatorYesVotes;
+        bool ownerFeeClaimed;
         uint256 curatorNoVotes;
     }
 
@@ -81,7 +50,6 @@ contract PredictionMarket {
     event WinningsClaimed(uint256 indexed id, address indexed claimer, uint256 amount);
     event CuratorFeeClaimed(uint256 _marketId, address curator, uint256 curatorShare);
     event PollContractDeployed(uint256 marketCount, address pollContractAddress, address messageProcessorContractAddress, address tallyContractAddress);
-    event RegisteredWithMACI(address indexed user);
 
 
     modifier onlyPlatformOwner() {
@@ -114,10 +82,9 @@ contract PredictionMarket {
         _;
     }
 
-    constructor(address _maciContractAddress) {
+    constructor() {
         platformOwner = msg.sender;
         marketCount = 0;
-        maciContractAddress = _maciContractAddress;
     }
 
     function setVoteCountForTest(address user, uint256 voteCount) public {
@@ -127,17 +94,6 @@ contract PredictionMarket {
 
     function setWorldcoinVerified(address _user, bool _status) external onlyPlatformOwner {
         worldcoinVerified[_user] = _status;
-    }
-
-    function registerWithMACI(Pubkey memory _pubkey) external {
-        IMACI maci = IMACI(maciContractAddress);
-        IMACI.Pubkey memory maciUserPubKey = IMACI.Pubkey({
-            // _coordinatorPubKey.x
-            x: 3023308648992852725595019790422607702317012588557935138001276188894784124188,
-            y: 15170407648900426833379661346620655554840178802737890165845364870025680060864
-        });
-        maci.signup(maciUserPubKey,'0x','0x');
-        emit RegisteredWithMACI(msg.sender);
     }
 
     function createMarket(
@@ -154,41 +110,13 @@ contract PredictionMarket {
         newMarket.question = _question;
         newMarket.outcome = MarketOutcome.NotResolved;
         newMarket.endDate = _endDate;
-        IMACI.Pubkey memory maciPubKey = IMACI.Pubkey({
-            // _coordinatorPubKey.x
-            x: 3023308648992852725595019790422607702317012588557935138001276188894784124188,
-            y: 15170407648900426833379661346620655554840178802737890165845364870025680060864
-        });
-        IMACI maci = IMACI(maciContractAddress);
-
-        IMACI.TreeDepths memory treeDepths = IMACI.TreeDepths({
-            intStateTreeDepth: 10,
-            messageTreeSubDepth: 3,
-            messageTreeDepth: 4,
-            voteOptionTreeDepth: 5
-        });
-
-        
-        (address pollContractAddress, address messageProcessorContractAddress, address tallyContractAddress)=maci.deployPoll(
-            604800,  
-            treeDepths,
-            // coordinatorPublicKey.asContractParams(),  
-            // findCoordinatorPublicKey(coordinatorPublicKey),
-            // coordinatorAddress.maci.asContractParams(),
-            maciPubKey,
-            0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0,
-            0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0,  
-            false
-        );
 
         emit MarketCreated(marketCount, _question, _endDate);
-        emit PollContractDeployed(marketCount, pollContractAddress, messageProcessorContractAddress, tallyContractAddress);
     }
 
     function buyVotes(
         uint256 _marketId,
-        bool _prediction,
-        bytes calldata _encryptedVote
+        bool _prediction
     ) external payable marketExists(_marketId) marketNotResolved(_marketId) isWorldcoinVerified(msg.sender) {
         require(msg.value > 0, "Amount must be greater than 0");
         require(block.timestamp < markets[_marketId].endDate, "Voting period has ended");
@@ -202,15 +130,14 @@ contract PredictionMarket {
             market.totalNoVotes += msg.value;
         }
 
-        market.encryptedVotes.push(_encryptedVote);
-        market.userVotes[buyer] += msg.value;
+         market.userVotes[buyer] += msg.value;
 
         // Increment global vote count
         if (market.userVotes[buyer] == msg.value) {
             userVoteCounts[buyer]++;
         }
 
-            emit VotesBought(_marketId, buyer, msg.value, _prediction);
+        emit VotesBought(_marketId, buyer, msg.value, _prediction);
     }
 
     function resolveMarket(
@@ -291,11 +218,12 @@ contract PredictionMarket {
             require(ownerSuccess, "Failed to send owner's fee");
             market.ownerFeeClaimed = true;
         }
-
+        
         (bool success, ) = claimer.call{value: finalWinnings}("");
         require(success, "Failed to send winnings");
-
+        userTotalWinnings[claimer] += finalWinnings;
         market.userWinningsClaimed[claimer] = true;
+        
 
         emit WinningsClaimed(_marketId, claimer, finalWinnings);
     }
