@@ -6,13 +6,15 @@ require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.24",
+  solidity: "0.8.20",
   networks: {
     airdao: {
       url: "https://network.ambrosus-test.io", 
       chainId: 22040,
       accounts: [process.env.PRIVATE_KEY],
     },
+    
+    
     // hardhat: {
     //   chainId: 31337,
     // },
