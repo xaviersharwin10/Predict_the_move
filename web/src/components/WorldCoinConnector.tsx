@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
-import { Button } from "@/components/ui/button";
 
 interface WorldCoinConnectProps {
   onSuccess: (proof: any) => void; // Define the prop type for onSuccess
@@ -106,7 +105,7 @@ export default function WorldCoinConnect({ onSuccess }: WorldCoinConnectProps) {
           </span>
           {worldcoinVerified && (
             <div className="mt-2 text-green-600">
-              You are verified! Start validating resolved markets.
+              You are verified! Start participating in markets.
             </div>
           )}
         </div>
