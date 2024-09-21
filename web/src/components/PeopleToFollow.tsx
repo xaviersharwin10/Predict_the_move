@@ -13,7 +13,7 @@ const PeopleToFollow = () => {
     <div className="bg-white border rounded-lg shadow-md p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-900">People to follow</h2>
-        <UserPlus className="w-5 h-5 text-orange-500" />
+        <UserPlus className="w-5 h-5 text-indigo-500" />
       </div>
       {people.map((person) => (
         <div key={person.id} className="flex items-center justify-between mb-4">
@@ -26,7 +26,7 @@ const PeopleToFollow = () => {
             <p className="text-gray-900">{person.username}</p>
             {person.verified && <CheckCircle className="w-4 h-4 text-green-500" />}
           </div>
-          <button className="bg-orange-500 text-white rounded-full px-4 py-1 hover:bg-orange-600 text-sm">
+          <button className="bg-indigo-500 text-white rounded-full px-4 py-1 hover:bg-indigo-600 text-sm">
             Follow
           </button>
         </div>

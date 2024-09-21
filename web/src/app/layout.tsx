@@ -4,11 +4,19 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Londrina_Solid } from '@next/font/google';
+import { PT_Sans} from 'next/font/google'; // Import PT Root UI
 
 const inter = Inter({ subsets: ["latin"] });
 
 const londrinaSolid = Londrina_Solid({
   weight: ['100', '300', '400', '900'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+// Importing PT Root UI font
+const ptsans = PT_Sans({
+  weight: ['400', '700'], // Specify the available weights
   subsets: ['latin'],
   display: 'swap',
 });
@@ -26,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={` ${inter.className} dark:bg-black -z-50 bg-gray-50 `}>
+      <body className={` ${ptsans.className} ${inter.className} dark:bg-black -z-50 bg-gray-50 `}>
         <Providers>
           {children}
         </Providers>

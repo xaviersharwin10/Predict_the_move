@@ -9,7 +9,7 @@ const ThreeVotes = () => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-2">Cast your first 3 votes to get started</h2>
-      <p className="text-red-500 mb-4">We'll cover the cost for you ✨</p>
+      <p className="text-indigo-500 mb-4">We'll cover the cost for you ✨</p>
 
       {/* Poll Section */}
       <div className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -39,7 +39,7 @@ const ThreeVotes = () => {
 
       {/* Pagination Dots */}
       <div className="flex justify-center mt-4">
-        <span className={`h-2 w-2 rounded-full mx-1 ${true ? "bg-blue-500" : "bg-gray-300"}`} />
+        <span className={`h-2 w-2 rounded-full mx-1 ${true ? "bg-indigo-500" : "bg-gray-300"}`} />
         <span className="h-2 w-2 rounded-full mx-1 bg-gray-300" />
         <span className="h-2 w-2 rounded-full mx-1 bg-gray-300" />
       </div>
