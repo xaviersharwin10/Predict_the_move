@@ -20,12 +20,6 @@ export default function CreateMarket() {
     error,
   } = useWriteContract();
 
-  // const { write: createMarket, error } = useWriteContract({
-  //   address: '0x3dD8cbB87fb42F7E7445847c46dc3a802a904cfb',
-  //   abi: ABI,
-  //   functionName: "createMarket",
-  // });
-
   const [question, setQuestion] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -40,7 +34,7 @@ export default function CreateMarket() {
     try {
       const hash = createMarket({
         abi,
-        address: "0x6b175474e89094c44da98b954eedeac495271d0f",
+        address: "0x9EE515e111219D83E20DC4040994cC3043bA9b92",
         functionName: "createMarket",
         // args: [
         //   'is Donald trump going to win',

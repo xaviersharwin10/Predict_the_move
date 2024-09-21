@@ -17,7 +17,7 @@ export default async function register(req: NextApiRequest, res: NextApiResponse
     // Check if the user is already registered
     const existingUser = users.find(user => user.walletAddress === walletAddress);
     if (existingUser) {
-      return res.status(400).json({ message: "User already registered." });
+    return res.status(400).json({ message: "User already registered." });
     }
 
     // Register the new user

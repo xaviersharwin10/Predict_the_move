@@ -65,8 +65,9 @@ export const TweetPoll = ({
   initialYesAmount,
   initialNoAmount,
   timeLeft,
+  isOwner, // Add this prop
   onVote,
-}: Poll & { onVote: (vote: string, amount: number, author:string, question:string) => void }) => {
+}: Poll & { onVote: (vote: string, amount: number, author: string, question: string) => void; isOwner: boolean })=> {
   const [yesAmount, setYesAmount] = useState(initialYesAmount);
   const [noAmount, setNoAmount] = useState(initialNoAmount);
   const [userVote, setUserVote] = useState<string | null>(null);
@@ -118,6 +119,14 @@ export const TweetPoll = ({
             <p className="font-semibold">{author}</p>
             <p className="text-sm text-gray-500">2 hours ago</p>
           </div>
+          {isOwner && (
+          <div className="text-right">
+            <Button onClick={() => console.log("Market resolved")} className="bg-green-500 hover:bg-green-600">
+              Market Resolve
+            </Button>
+          </div>
+        )}
+
         </div>
         <p
           className={`text-lg font-medium mb-4 ${

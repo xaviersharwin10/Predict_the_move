@@ -26,7 +26,7 @@ const verifyProof = async (
 };
 
 export async function POST(request: Request) {
-  const req = await request.json();
+const req = await request.json();
   const { proof } = req;
   const app_id = "app_846115237895268859dfa22a033bdf53";
   const action = "verify-human";
