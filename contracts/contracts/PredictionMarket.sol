@@ -300,6 +300,8 @@ contract PredictionMarket {
         (bool success, ) = claimer.call{value: finalWinnings}("");
         require(success, "Failed to send winnings");
 
+        market.userWinningsClaimed[claimer] = true;
+
         emit WinningsClaimed(_marketId, claimer, finalWinnings);
     }
 
@@ -308,11 +310,20 @@ contract PredictionMarket {
         require(market.outcome != MarketOutcome.NotResolved, "Market not yet resolved");
         require(block.timestamp > market.resolvedAt + lockInPeriod, "Lock-in period has not ended");
         require(!market.challenged || (market.curatorYesVotes > market.curatorNoVotes), "Challenges unresolved");
-
         address curator = msg.sender;
 
         // Check if curator has already claimed their fee
         require(!market.curatorFeeClaimed[curator], "Curator fee already claimed by this curator");
+
+        // Check if the curator is in the curatorAddresses array
+        bool isCurator = false;
+        for (uint256 i = 0; i < market.curatorAddresses.length; i++) {
+            if (market.curatorAddresses[i] == curator) {
+                isCurator = true;
+                break;
+            }
+        }
+        require(isCurator, "Curator is not part of the challenge");
 
         uint256 curatorFee = (market.totalWinnings * curatorFeePercentage) / 100;
         uint256 curatorShare = curatorFee / (market.curatorYesVotes + market.curatorNoVotes);
