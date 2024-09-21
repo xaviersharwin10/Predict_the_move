@@ -4,6 +4,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Pin } from "lucide-react";
 import { useAccount, useBalance } from 'wagmi';
+import { useReadContract } from 'wagmi';
+import { abi } from "../data/abi";
 
 const weiToEther = (wei: string) => {
   return (parseFloat(wei) / 1e18).toFixed(4); // 18 decimals for Ether
@@ -26,12 +28,12 @@ const OverviewCard = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-900">Overview</h2>
-        <Pin className="w-5 h-5 text-orange-500" />
+        <Pin className="w-5 h-5 text-indigo-500" />
       </div>
 
       {/* Balance */}
       <div className="mb-4">
-        <p className="text-sm text-orange-500">Claim Winnings</p>
+        <p className="text-sm text-indigo-500">Claim Winnings</p>
         {isConnected ? (
         <h3 className="text-3xl font-bold text-black">$ {formattedBalance} {data?.symbol}</h3>
       ) : (
@@ -42,7 +44,7 @@ const OverviewCard = () => {
       {/* Buttons */}
       <div className="flex space-x-2 mb-4">
         <Button
-          className="bg-orange-500 text-white rounded-full px-4 py-1 hover:bg-orange-600"
+          className="bg-indigo-500 text-white rounded-full px-4 py-1 hover:bg-indigo-600"
           // Add withdraw logic here
         >
           Withdraw
@@ -51,7 +53,7 @@ const OverviewCard = () => {
 
       {/* Leaderboard */}
       <div>
-        <p className="text-orange-500 font-medium">Leaderboard</p>
+        <p className="text-indigo-500 font-medium">Leaderboard</p>
         <p className="text-gray-500 text-sm">Coming Soon</p>
       </div>
     </div>

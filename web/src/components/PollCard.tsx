@@ -59,7 +59,7 @@ const NounsAvatar = ({ seed }: { seed: number }) => {
 };
 
 // Tweet Poll Component
-const TweetPoll = ({
+export const TweetPoll = ({
   author,
   question,
   initialYesAmount,
@@ -183,21 +183,21 @@ const TweetPoll = ({
                 isNounsMode ? "mx-2 bg-blue-500 hover:bg-blue-600" : "mx-2"
               }`}
             >
-              Vote Yes
+              Bet Yes
             </Button>
             <Button
               onClick={() => handleVote("no")}
               disabled={userVote !== null || voteAmount <= 0}
               className={`${isNounsMode ? "bg-red-500 hover:bg-red-600" : ""}`}
             >
-              Vote No
+              Bet No
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center text-sm text-gray-500">
           {/* {isLive && <span className="text-green-500 mr-2">● live</span>} */}
           <span className="text-green-500 mr-2">● live</span>
-          <span>Share your opinion by placing a vote with USDC</span>
+          <span>Share your opinion by placing a vote with AMB</span>
           <span className="text-sm text-right text-gray-500">{timeLeft} left</span>
         </div>
       </CardContent>
@@ -270,7 +270,7 @@ export default function PollCard() {
     console.log("User voted:", vote);
     const newFeedItem: FeedItem = {
       author,
-      content: `Voted ${vote} with ${amount} USDC on: "${question}"`,
+      content: `Voted ${vote} with ${amount} AMB on: "${question}"`,
       time: new Date().toLocaleTimeString(), // You can format the time as needed
     };
     setFeedItems([newFeedItem, ...feedItems]); // Add new feed item at the top

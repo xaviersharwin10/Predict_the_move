@@ -100,7 +100,7 @@ export default function WorldCoinConnect({ onSuccess }: WorldCoinConnectProps) {
         </IDKitWidget>
       ) : (
         <div className="text-right mt-1 mr-1">
-          <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+          <span className="text-xs bg-indigo-500 text-white px-2 py-1 rounded-full">
             Worldcoin Verified ✅
           </span>
           {worldcoinVerified && (

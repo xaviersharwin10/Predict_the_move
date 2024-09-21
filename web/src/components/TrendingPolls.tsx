@@ -11,7 +11,7 @@ const TrendingPolls = () => {
     <div className="bg-white border rounded-lg shadow-md p-4 mb-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-900">Trending Polls</h2>
-        <TrendingUp className="w-5 h-5 text-orange-500"/>
+        <TrendingUp className="w-5 h-5 text-indigo-500"/>
       </div>
       {polls.map((poll) => (
         <div key={poll.id} className="mb-4">

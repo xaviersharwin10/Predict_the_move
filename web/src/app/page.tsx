@@ -17,18 +17,88 @@ import OverviewCard from "@/components/OverviewCard";
 import TrendingPolls from "@/components/TrendingPolls";
 import PeopleToFollow from "@/components/PeopleToFollow";
 import ThreeVotes from "@/components/ThreeVotes";
+import { TweetPoll } from "@/components/TweetPoll";
+import { FeedItem } from "@/components/FeedItem";
 
-const tabs = ["Trending"]; // Initially only "Trending" is present
+export default function Home() {
+  const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+  const [activeTab, setActiveTab] = useState("For You");
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const tabs = ["Trending"]; // Initially only "Trending" is present
 
 const formatAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
-export default function Home() {
-  const { address, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({ address });
-  const [activeTab, setActiveTab] = useState("Trending");
-  const [dialogOpen, setDialogOpen] = useState(false);
+type FeedItemData = {
+  author: string;
+  content: string;
+  time: string;
+};
+
+const pollData = [
+  {
+    author: "Jane Doe",
+    question: "Should we integrate NounsDAO with AirDAO?",
+    initialYesAmount: 5000,
+    initialNoAmount: 2500,
+    timeLeft: "5 days",
+  },
+  {
+    author: "John Smith",
+    question: "Will ETH reach $5000 by end of 2024?",
+    initialYesAmount: 12000,
+    initialNoAmount: 8000,
+    timeLeft: "10 days",
+  },
+  {
+    author: "Alice Johnson",
+    question: "Will Worldcoin adoption increase in 2025?",
+    initialYesAmount: 7000,
+    initialNoAmount: 6000,
+    timeLeft: "3 days",
+  },
+];
+
+  // Initial feed data
+  const [feedItems, setFeedItems] = useState<FeedItemData[]>([
+    {
+      author: "Jane Doe",
+      content: "Check out the latest integration with AirDAO!",
+      time: "3 hours ago",
+    },
+  ]);
+
+  // Handle vote and add new feed item
+  const handleVote = (
+    vote: string,
+    amount: number,
+    author: string,
+    question: string
+  ) => {
+    console.log(
+      `Voted ${vote} with amount ${amount} for poll by ${author}: ${question}`
+    );
+
+    // Create new feed item content based on the vote
+    const newFeedItem: FeedItemData = {
+      author: "You", // Assuming the user is the one who voted
+      content: (
+        <>
+          I voted <strong className="font-bold">{vote}</strong> with{" "}
+          <span className="text-green-500 font-semibold">{amount} AMB</span> on{" "}
+          <strong>{question}</strong> by
+          <span className="text-purple-500 font-medium"> {author}</span>.
+        </>
+      ),
+      time: "Just now", // You could use a date-time library like dayjs to format real timestamps
+    };
+
+    // Update the feedItems state and add the new feed at the top
+    setFeedItems([newFeedItem, ...feedItems]);
+  };
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -112,24 +182,50 @@ export default function Home() {
                     <CreateMarket />
                   </DialogContent>
                 </Dialog>
-                <PollCard />
+                <div className="mx-2 py-4">
+                  {feedItems.map((item, index) => (
+                    <FeedItem
+                      key={index}
+                      author={item.author}
+                      content={item.content}
+                      time={item.time}
+                    />
+                  ))}
+
+                  {pollData.map((poll, index) => (
+                    <TweetPoll
+                      key={index}
+                      author={poll.author}
+                      question={poll.question}
+                      initialYesAmount={poll.initialYesAmount}
+                      initialNoAmount={poll.initialNoAmount}
+                      timeLeft={poll.timeLeft}
+                      onVote={handleVote}
+                    />
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Always display Trending content */}
             {(activeTab === "Trending" || !isConnected) && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">Trending 🔥</h2>
-                <p>
-                  Check out what's trending right now in the world of crypto,
-                  news, and more!
-                </p>
+                {pollData.map((poll, index) => (
+                  <TweetPoll
+                    key={index}
+                    author={poll.author}
+                    question={poll.question}
+                    initialYesAmount={poll.initialYesAmount}
+                    initialNoAmount={poll.initialNoAmount}
+                    timeLeft={poll.timeLeft}
+                    onVote={handleVote}
+                  />
+                ))}
               </div>
             )}
           </div>
         </div>
         <div className="col-span-3 space-y-4">
-          {/* <WorldCoinConnect/> */}
           <OverviewCard />
           <TrendingPolls />
           <PeopleToFollow />
