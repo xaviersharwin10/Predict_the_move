@@ -25,6 +25,38 @@ contract PredictionMarket {
   // Reduced to one event for significant state changes
   event MarketStateChanged(uint256 indexed id, string action);
 
+  struct MarketDetails {
+        address owner;
+        string question;
+        uint256 totalYesStake;
+        uint256 totalNoStake;
+        uint256 endDate;
+        Outcome outcome;
+    }
+
+    function getMarketDetailsforallMarkets(uint256 _marketId) internal view returns (MarketDetails memory) {
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market ID");
+        Market storage market = markets[_marketId];
+        return MarketDetails(
+            market.owner,
+            market.question,
+            market.totalYesStake,
+            market.totalNoStake,
+            market.endDate,
+            market.outcome
+        );
+    }
+
+    function getAllMarketDetails() external view returns (MarketDetails[] memory) {
+        MarketDetails[] memory allMarketDetails = new MarketDetails[](marketCount);
+
+        for (uint256 i = 1; i <= marketCount; i++) {
+            allMarketDetails[i - 1] = getMarketDetailsforallMarkets(i);
+        }
+
+        return allMarketDetails;
+    }
+
   function createMarket(string memory _question, uint256 _endDate) external {
     require(_endDate > block.timestamp, "End date must be in the future");
 
@@ -101,7 +133,6 @@ contract PredictionMarket {
     emit MarketStateChanged(_marketId, "WinningsClaimed");
   }
 
-  // New view functions
   function getMarketDetails(
     uint256 _marketId
   )
