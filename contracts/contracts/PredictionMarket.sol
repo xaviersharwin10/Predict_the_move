@@ -35,16 +35,10 @@ contract PredictionMarket {
     uint256 public ownerFeeSharePercentage = 20; // 20% of the platform fee goes to the market owner
     uint256 public curatorFeePercentage = 5; 
 
-    struct Secrets {
-        string sharedSecret;
-        string publicKey;
-    }
     struct Pubkey {
         uint256 x;
         uint256 y;
     }
-
-    mapping(uint256 => Secrets) private sharedSecret;
 
     enum MarketOutcome {
         NotResolved,
@@ -147,8 +141,6 @@ contract PredictionMarket {
 
     function createMarket(
         string memory _question,
-        string memory _publicKey,
-        string memory _sharedSecret,
         // Pubkey memory _coordinatorPubKey,
         uint256 _endDate
     ) external hasVotedIn3Markets(msg.sender) isWorldcoinVerified(msg.sender) {
@@ -161,10 +153,6 @@ contract PredictionMarket {
         newMarket.question = _question;
         newMarket.outcome = MarketOutcome.NotResolved;
         newMarket.endDate = _endDate;
-
-        Secrets storage secret = sharedSecret[marketCount];
-        secret.sharedSecret = _sharedSecret;
-        secret.publicKey = _publicKey;
         IMACI.Pubkey memory maciPubKey = IMACI.Pubkey({
             // _coordinatorPubKey.x
             x: 3023308648992852725595019790422607702317012588557935138001276188894784124188,
