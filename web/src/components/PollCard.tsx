@@ -280,7 +280,7 @@ export default function PollCard() {
   return (
 
 
-<div className="container p-4">
+<div className="p-4">
 {data.map(({ poll }, index) => (
   <div key={index}>
     <TweetPoll {...poll} onVote={handleVote} />

@@ -13,6 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import CreateMarket from "@/app/create-market/page";
 import PollCard from "@/components/PollCard";
+import OverviewCard from "@/components/OverviewCard";
+import TrendingPolls from "@/components/TrendingPolls";
+import PeopleToFollow from "@/components/PeopleToFollow";
+import ThreeVotes from "@/components/ThreeVotes";
 
 const tabs = ["Trending"]; // Initially only "Trending" is present
 
@@ -108,7 +112,7 @@ export default function Home() {
                     <CreateMarket />
                   </DialogContent>
                 </Dialog>
-       <PollCard/>
+                <PollCard />
               </div>
             )}
 
@@ -123,6 +127,13 @@ export default function Home() {
               </div>
             )}
           </div>
+        </div>
+        <div className="col-span-3 space-y-4">
+          {/* <WorldCoinConnect/> */}
+          <OverviewCard />
+          <TrendingPolls />
+          <PeopleToFollow />
+          <ThreeVotes />
         </div>
       </div>
     </MainLayout>
