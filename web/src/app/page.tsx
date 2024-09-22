@@ -1,6 +1,6 @@
 "use client";
 
-import { useAccount, useEnsName } from "wagmi";
+import { useAccount, useEnsName, useReadContracts } from "wagmi";
 import React, { useState, useEffect } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import {
@@ -49,6 +49,18 @@ export default function Home() {
     functionName: "getMarketCount",
   });
 
+  const contractCalls = Array.from({ length: Number(countData) }).map(
+    (_, index) => ({
+      abi,
+      address: '0x9EE515e111219D83E20DC4040994cC3043bA9b92',
+      functionName: "getMarketDetails",
+      args: [index],
+    })
+  );
+
+  const { data: ballots, isLoading: ballotsLoading } = useReadContracts({
+    contracts: contractCalls,
+  });
   // Fetch market details
   const fetchMarketDetails = async (count: number) => {
     const details: MarketDetail[] = [];
