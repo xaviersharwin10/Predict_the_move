@@ -1,7 +1,7 @@
 "use client";
 
-import { useAccount, useEnsName, useReadContracts } from "wagmi";
-import React, { useState, useEffect } from "react";
+import { useAccount, useEnsName } from "wagmi";
+import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import {
   Dialog,
@@ -19,96 +19,50 @@ import PeopleToFollow from "@/components/PeopleToFollow";
 import ThreeVotes from "@/components/ThreeVotes";
 import { TweetPoll } from "@/components/TweetPoll";
 import { FeedItem } from "@/components/FeedItem";
-import { useReadContract } from "wagmi";
-import { abi } from "../data/abi";
-import { toast } from "@/components/hooks/use-toast";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
-  const { data: enrrrsName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address });
   const [activeTab, setActiveTab] = useState("For You");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [pollData, setPollData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const [marketCount, setMarketCount] = useState(0);
-  const [marketDetails, setMarketDetails] = useState<MarketDetail[]>([]);
+  const tabs = ["Trending"]; // Initially only "Trending" is present
 
-  type MarketDetail = {
-    question: string;
-    owner: string;
-    endDate: number; // Assuming this is a timestamp in seconds
-    totalYesStake: number;
-    totalNoStake: number;
-  };
+const formatAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
 
-  // Fetch market count
-  const { data: countData, isSuccess: countSuccess, isError: countError, error: countErrorMsg } = useReadContract({
-    abi,
-    address: "0x9EE515e111219D83E20DC4040994cC3043bA9b92",
-    functionName: "getMarketCount",
-  });
+type FeedItemData = {
+  author: string;
+  content: string;
+  time: string;
+};
 
-  const contractCalls = Array.from({ length: Number(countData) }).map(
-    (_, index) => ({
-      abi,
-      address: '0x9EE515e111219D83E20DC4040994cC3043bA9b92',
-      functionName: "getMarketDetails",
-      args: [index],
-    })
-  );
+const pollData = [
+  {
+    author: "Jane Doe",
+    question: "Should we integrate NounsDAO with AirDAO?",
+    initialYesAmount: 5000,
+    initialNoAmount: 2500,
+    timeLeft: "5 days",
+  },
+  {
+    author: "John Smith",
+    question: "Will ETH reach $5000 by end of 2024?",
+    initialYesAmount: 12000,
+    initialNoAmount: 8000,
+    timeLeft: "10 days",
+  },
+  {
+    author: "Alice Johnson",
+    question: "Will Worldcoin adoption increase in 2025?",
+    initialYesAmount: 7000,
+    initialNoAmount: 6000,
+    timeLeft: "3 days",
+  },
+];
 
-  const { data: ballots, isLoading: ballotsLoading } = useReadContracts({
-    contracts: contractCalls,
-  });
-  // Fetch market details
-  const fetchMarketDetails = async (count: number) => {
-    const details: MarketDetail[] = [];
-
-    for (let i = 0; i < count; i++) {
-      const { data, isSuccess, isError, error } = await useReadContract({
-        abi,
-        address: "0x9EE515e111219D83E20DC4040994cC3043bA9b92",
-        functionName: "getMarketDetails",
-        args: [i], // Assuming getMarketDetails takes an index as an argument
-      });
-
-      if (isSuccess && data) {
-        // Ensure data is correctly typed
-        const marketDetail = data as MarketDetail; // Cast to MarketDetail type
-        details.push(marketDetail); // Now this should work without error
-      } else {
-        console.error(`Error fetching market details for index ${i}:`, error);
-      }
-    }
-    setMarketDetails(details);
-  };
-
-  useEffect(() => {
-    if (countSuccess && countData) {
-      const count = Array.isArray(countData) ? countData[0].toNumber() : Number(countData); // Adjust based on how countData is structured
-      setMarketCount(count);
-      fetchMarketDetails(count);
-    }
-
-    if (countError) {
-      console.error("Error fetching market count:", countErrorMsg);
-      toast({
-        title: "Error",
-        description: "Failed to fetch market count.",
-        variant: "destructive",
-      });
-    }
-  }, [countSuccess, countData, countError, countErrorMsg]);
-
-
-  type FeedItemData = {
-    author: string;
-    content: string;
-    time: string;
-  };
-
-
+  // Initial feed data
   const [feedItems, setFeedItems] = useState<FeedItemData[]>([
     {
       author: "Jane Doe",
@@ -117,41 +71,20 @@ export default function Home() {
     },
   ]);
 
-  const tabs = ["Trending"]; // Initially only "Trending" is present
+  // Handle vote and add new feed item
+  const handleVote = (
+    vote: string,
+    amount: number,
+    author: string,
+    question: string
+  ) => {
+    console.log(
+      `Voted ${vote} with amount ${amount} for poll by ${author}: ${question}`
+    );
 
-  const formatAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
-  const pollData1 = [
-    {
-      author: "Jane Doe",
-      question: "Should we integrate NounsDAO with AirDAO?",
-      initialYesAmount: 5000,
-      initialNoAmount: 2500,
-      timeLeft: "5 days",
-    },
-    {
-      author: "John Smith",
-      question: "Will ETH reach $5000 by end of 2024?",
-      initialYesAmount: 12000,
-      initialNoAmount: 8000,
-      timeLeft: "10 days",
-    },
-    {
-      author: "Alice Johnson",
-      question: "Will Worldcoin adoption increase in 2025?",
-      initialYesAmount: 7000,
-      initialNoAmount: 6000,
-      timeLeft: "3 days",
-    },
-  ];
-
-  const handleVote = (vote: string, amount: number, author: string, question: string) => {
-    console.log(`Voted ${vote} with amount ${amount} for poll by ${author}: ${question}`);
-    
+    // Create new feed item content based on the vote
     const newFeedItem: FeedItemData = {
-      author: "You",
+      author: "You", // Assuming the user is the one who voted
       content: (
         <>
           I voted <strong className="font-bold">{vote}</strong> with{" "}
@@ -160,9 +93,10 @@ export default function Home() {
           <span className="text-purple-500 font-medium"> {author}</span>.
         </>
       ),
-      time: "Just now",
+      time: "Just now", // You could use a date-time library like dayjs to format real timestamps
     };
 
+    // Update the feedItems state and add the new feed at the top
     setFeedItems([newFeedItem, ...feedItems]);
   };
 
@@ -172,38 +106,50 @@ export default function Home() {
 
   return (
     <MainLayout>
+      {/* Welcome message */}
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-9">
           {isConnected ? (
             <div className="mx-2 text-3xl font-medium">
               Welcome
-              {address ? (
-                <span className="text-3xl font-bold">{` ${address}`}</span>
+              {ensName ? (
+                <span className="text-3xl font-bold">{` ${ensName}`}</span>
               ) : (
-                <span className="text-3xl font-bold">{` ${formatAddress(address!)} `}</span>
+                <span className="text-3xl font-bold">{` ${formatAddress(
+                  address!
+                )} `}</span>
               )}
               👋🏻
             </div>
           ) : (
             <div className="mx-2 text-3xl font-medium">
-              <p className="text-lg font-semibold mb-4">Hello Stranger, please connect your wallet</p>
+              <p className="text-lg font-semibold mb-4">
+                Hello Stranger, please connect your wallet
+              </p>
             </div>
           )}
 
+          {/* Tab Navigation */}
           {isConnected && (
             <div className="flex mt-10 mb-4">
+              {/* Show "For You" tab only if connected */}
               <button
                 onClick={() => handleTabClick("For You")}
                 className={`py-2 mx-2 text-lg font-bold focus:outline-none ${
-                  activeTab === "For You" ? "border-b-2 border-gray-600 text-black-600 dark:border-gray-200 dark:text-gray-50" : "border-b-2 border-transparent text-gray-600 hover:text-black-400"
+                  activeTab === "For You"
+                    ? "border-b-2 border-gray-600 text-black-600 dark:border-gray-200 dark:text-gray-50"
+                    : "border-b-2 border-transparent text-gray-600 hover:text-black-400"
                 }`}
               >
                 For You
               </button>
+              {/* "Trending" tab is always present */}
               <button
                 onClick={() => handleTabClick("Trending")}
                 className={`py-2 mx-2 text-lg font-bold focus:outline-none ${
-                  activeTab === "Trending" ? "border-b-2 border-gray-600 text-black-600 dark:border-gray-200 dark:text-gray-50" : "border-b-2 border-transparent text-gray-600 hover:text-black-400"
+                  activeTab === "Trending"
+                    ? "border-b-2 border-gray-600 text-black-600 dark:border-gray-200 dark:text-gray-50"
+                    : "border-b-2 border-transparent text-gray-600 hover:text-black-400"
                 }`}
               >
                 Trending
@@ -211,6 +157,7 @@ export default function Home() {
             </div>
           )}
 
+          {/* Tab Content */}
           <div>
             {activeTab === "For You" && isConnected && (
               <div>
@@ -227,37 +174,43 @@ export default function Home() {
                   <DialogContent className="sm:max-w-[525px]">
                     <DialogHeader>
                       <DialogTitle>Create Market</DialogTitle>
-                      <DialogDescription>Create your own market here. Click submit when you're done.</DialogDescription>
+                      <DialogDescription>
+                        Create your own market here. Click submit when you're
+                        done.
+                      </DialogDescription>
                     </DialogHeader>
                     <CreateMarket />
                   </DialogContent>
                 </Dialog>
                 <div className="mx-2 py-4">
                   {feedItems.map((item, index) => (
-                    <FeedItem key={index} author={item.author} content={item.content} time={item.time} />
+                    <FeedItem
+                      key={index}
+                      author={item.author}
+                      content={item.content}
+                      time={item.time}
+                    />
                   ))}
 
-                    {marketDetails.length> 0?(marketDetails.map((poll, index) => (
-                      <TweetPoll
-                        key={index}
-                        author={poll.owner}
-                        question={poll.question}
-                        totalYesStake={poll.totalYesStake.toString()}
-                        totalNoStake={poll.totalNoStake.toString()}
-                        timeLeft={new Date(poll.endDate * 1000).toLocaleString()}
-                        onVote={() => handleVote( poll.totalYesStake, poll.owner, poll.question)} // Adjusted for vote handling
-                      />
-                    ))
-                  ) : (
-                    <div>No markets found</div>
-                  )}
+                  {pollData.map((poll, index) => (
+                    <TweetPoll
+                      key={index}
+                      author={poll.author}
+                      question={poll.question}
+                      initialYesAmount={poll.initialYesAmount}
+                      initialNoAmount={poll.initialNoAmount}
+                      timeLeft={poll.timeLeft}
+                      onVote={handleVote}
+                    />
+                  ))}
                 </div>
               </div>
             )}
 
+            {/* Always display Trending content */}
             {(activeTab === "Trending" || !isConnected) && (
               <div>
-                {pollData1.map((poll, index) => (
+                {pollData.map((poll, index) => (
                   <TweetPoll
                     key={index}
                     author={poll.author}

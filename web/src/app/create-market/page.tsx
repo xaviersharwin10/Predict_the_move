@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React ,{ useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
