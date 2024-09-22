@@ -19,6 +19,7 @@ import PeopleToFollow from "@/components/PeopleToFollow";
 import ThreeVotes from "@/components/ThreeVotes";
 import { TweetPoll } from "@/components/TweetPoll";
 import { FeedItem } from "@/components/FeedItem";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -28,39 +29,39 @@ export default function Home() {
 
   const tabs = ["Trending"]; // Initially only "Trending" is present
 
-const formatAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
 
-type FeedItemData = {
-  author: string;
-  content: string;
-  time: string;
-};
+  type FeedItemData = {
+    author: string;
+    content: string;
+    time: string;
+  };
 
-const pollData = [
-  {
-    author: "Jane Doe",
-    question: "Should we integrate NounsDAO with AirDAO?",
-    initialYesAmount: 5000,
-    initialNoAmount: 2500,
-    timeLeft: "5 days",
-  },
-  {
-    author: "John Smith",
-    question: "Will ETH reach $5000 by end of 2024?",
-    initialYesAmount: 12000,
-    initialNoAmount: 8000,
-    timeLeft: "10 days",
-  },
-  {
-    author: "Alice Johnson",
-    question: "Will Worldcoin adoption increase in 2025?",
-    initialYesAmount: 7000,
-    initialNoAmount: 6000,
-    timeLeft: "3 days",
-  },
-];
+  const pollData = [
+    {
+      author: "Jane Doe",
+      question: "Should we integrate NounsDAO with AirDAO?",
+      initialYesAmount: 5000,
+      initialNoAmount: 2500,
+      timeLeft: "5 days",
+    },
+    {
+      author: "John Smith",
+      question: "Will ETH reach $5000 by end of 2024?",
+      initialYesAmount: 12000,
+      initialNoAmount: 8000,
+      timeLeft: "10 days",
+    },
+    {
+      author: "Alice Johnson",
+      question: "Will Worldcoin adoption increase in 2025?",
+      initialYesAmount: 7000,
+      initialNoAmount: 6000,
+      timeLeft: "3 days",
+    },
+  ];
 
   // Initial feed data
   const [feedItems, setFeedItems] = useState<FeedItemData[]>([
@@ -129,9 +130,32 @@ const pollData = [
             </div>
           )}
 
+          <div className="flex flex-row items-center justify-between p-2">
+            <div>
+              <h1 className="text-xl font-medium">
+          Your one stop solution - All features are also available on telegram 👉🏻
+              </h1>
+            </div>
+
+          
+
+            <Button
+              asChild
+              className="bg-indigo-500 text-white hover:bg-indigo-600"
+            >
+              <a
+                href="https://web.telegram.org/k/#@TrendSage_Bot"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Trend Sage Bot 🤖
+              </a>
+            </Button>
+          </div>
+
           {/* Tab Navigation */}
           {isConnected && (
-            <div className="flex mt-10 mb-4">
+            <div className="flex mt-2 mb-4">
               {/* Show "For You" tab only if connected */}
               <button
                 onClick={() => handleTabClick("For You")}
