@@ -12,6 +12,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import CreateMarket from "@/app/create-market/page";
+import GetAllMarkets from "./api/getMarkets";
 import PollCard from "@/components/PollCard";
 import OverviewCard from "@/components/OverviewCard";
 import TrendingPolls from "@/components/TrendingPolls";
@@ -91,7 +92,7 @@ export default function Home() {
           I voted <strong className="font-bold">{vote}</strong> with{" "}
           <span className="text-green-500 font-semibold">{amount} AMB</span> on{" "}
           <strong>{question}</strong> by
-          <span className="text-purple-500 font-medium"> {author}</span>.
+          <span className="text-psurple-500 font-medium"> {author}</span>.
         </>
       ),
       time: "Just now", // You could use a date-time library like dayjs to format real timestamps
@@ -133,13 +134,13 @@ export default function Home() {
           <div className="flex flex-row items-center justify-between p-2">
             <div>
               <h1 className="text-xl font-medium">
-          Your one stop solution - All features are also available on telegram 👉🏻
+          Predict. Earn. Live. Predict again. 
               </h1>
             </div>
 
           
 
-            <Button
+            {/* <Button
               asChild
               className="bg-indigo-500 text-white hover:bg-indigo-600"
             >
@@ -150,14 +151,14 @@ export default function Home() {
               >
                 Trend Sage Bot 🤖
               </a>
-            </Button>
+            </Button> */}
           </div>
 
           {/* Tab Navigation */}
           {isConnected && (
             <div className="flex mt-2 mb-4">
               {/* Show "For You" tab only if connected */}
-              <button
+              {/* <button
                 onClick={() => handleTabClick("For You")}
                 className={`py-2 mx-2 text-lg font-bold focus:outline-none ${
                   activeTab === "For You"
@@ -166,9 +167,9 @@ export default function Home() {
                 }`}
               >
                 For You
-              </button>
+              </button> */}
               {/* "Trending" tab is always present */}
-              <button
+              {/* <button
                 onClick={() => handleTabClick("Trending")}
                 className={`py-2 mx-2 text-lg font-bold focus:outline-none ${
                   activeTab === "Trending"
@@ -177,7 +178,7 @@ export default function Home() {
                 }`}
               >
                 Trending
-              </button>
+              </button> */}
             </div>
           )}
 
@@ -188,7 +189,7 @@ export default function Home() {
                 <div className="mx-2">
                   <input
                     type="text"
-                    placeholder="What do you think?"
+                    placeholder="Click to create Market!"
                     className="p-4 border border-gray-300 rounded-md w-full"
                     onClick={() => setDialogOpen(true)}
                   />
@@ -206,7 +207,7 @@ export default function Home() {
                     <CreateMarket />
                   </DialogContent>
                 </Dialog>
-                <div className="mx-2 py-4">
+                {/* <div className="mx-2 py-4">
                   {feedItems.map((item, index) => (
                     <FeedItem
                       key={index}
@@ -227,6 +228,9 @@ export default function Home() {
                       onVote={handleVote}
                     />
                   ))}
+                </div> */}
+                <div>
+                  < GetAllMarkets/>
                 </div>
               </div>
             )}
@@ -251,9 +255,9 @@ export default function Home() {
         </div>
         <div className="col-span-3 space-y-4">
           <OverviewCard />
-          <TrendingPolls />
+          {/* <TrendingPolls />
           <PeopleToFollow />
-          <ThreeVotes />
+          <ThreeVotes /> */}
         </div>
       </div>
     </MainLayout>

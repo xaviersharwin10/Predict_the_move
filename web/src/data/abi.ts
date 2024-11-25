@@ -1,4 +1,4 @@
-export const abi = [
+export const abi= [
   {
     "anonymous": false,
     "inputs": [
@@ -75,6 +75,49 @@ export const abi = [
   },
   {
     "inputs": [],
+    "name": "getAllMarkets",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "marketIds",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "owners",
+        "type": "address[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "questions",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "totalYesStakes",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "totalNoStakes",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "endDates",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "enum SimplePredictionMarket.Outcome[]",
+        "name": "outcomes",
+        "type": "uint8[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getMarketCount",
     "outputs": [
       {
@@ -122,7 +165,7 @@ export const abi = [
         "type": "uint256"
       },
       {
-        "internalType": "enum PredictionMarket.Outcome",
+        "internalType": "enum SimplePredictionMarket.Outcome",
         "name": "outcome",
         "type": "uint8"
       }
@@ -141,7 +184,7 @@ export const abi = [
     "name": "getMarketOutcome",
     "outputs": [
       {
-        "internalType": "enum PredictionMarket.Outcome",
+        "internalType": "enum SimplePredictionMarket.Outcome",
         "name": "",
         "type": "uint8"
       }
@@ -227,7 +270,7 @@ export const abi = [
         "type": "uint256"
       },
       {
-        "internalType": "enum PredictionMarket.Outcome",
+        "internalType": "enum SimplePredictionMarket.Outcome",
         "name": "outcome",
         "type": "uint8"
       }

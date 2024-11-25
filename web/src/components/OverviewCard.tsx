@@ -33,7 +33,7 @@ const OverviewCard = () => {
 
       {/* Balance */}
       <div className="mb-4">
-<p className="text-sm text-indigo-500">Claim Winnings</p>
+<p className="text-sm text-indigo-500">Balance</p>
         {isConnected ? (
         <h3 className="text-3xl font-bold text-black">$ {formattedBalance} {data?.symbol}</h3>
       ) : (
@@ -42,20 +42,20 @@ const OverviewCard = () => {
       </div>
 
       {/* Buttons */}
-      <div className="flex space-x-2 mb-4">
+      {/* <div className="flex space-x-2 mb-4">
         <Button
   className="bg-indigo-500 text-white rounded-full px-4 py-1 hover:bg-indigo-600"
           // Add withdraw logic here
         >
           Withdraw
         </Button>
-      </div>
+      </div> */}
 
       {/* Leaderboard */}
-      <div>
+      {/* <div>
 <p className="text-indigo-500 font-medium">Leaderboard</p>
         <p className="text-gray-500 text-sm">Coming Soon</p>
-      </div>
+      </div> */}
     </div>
   );
 };

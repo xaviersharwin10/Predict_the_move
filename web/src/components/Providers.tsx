@@ -43,7 +43,6 @@ const queryClient = new QueryClient();
 //     [sepolia.id]: http(),
 //   },
 // });
-
 export const config = createConfig({
   chains: [{
     id: 22040, // AirDAO chain ID
@@ -66,6 +65,30 @@ export const config = createConfig({
     22040: http(),
   },
 });
+
+
+// export const config = createConfig({
+//   chains: [{
+//     id: 31337, // local hardhat chain id
+//     name: "localhost",
+//     rpcUrls: {
+//       default: {
+//         http: ["http://127.0.0.1:8545"], // Array of RPC URLs
+//       },
+//       public: {
+//         http: ["http://127.0.0.1:8545"], // Same for public RPC
+//       },
+//     },
+//     nativeCurrency: {
+//       name: "Ethereum",
+//       symbol: "ETH",
+//       decimals: 18,
+//     },
+//   }],
+//   transports: {
+//     31337: http(),
+//   },
+// });
 
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {

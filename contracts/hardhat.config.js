@@ -13,17 +13,15 @@ module.exports = {
       chainId: 22040,
       accounts: [process.env.PRIVATE_KEY],
     },
-    
-    
     // hardhat: {
     //   chainId: 31337,
     // },
-    // // sepolia: {
-    // //   url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
-    // //   accounts: [process.env.PRIVATE_KEY],
-    // // },
+    // sepolia: {
+    //   url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    //   accounts: [process.env.PRIVATE_KEY],
+    // },
     // localhost: {
-    //   url: "http://127.0.0.1:8900", // Connect to the local Hardhat node
+    //   url: "http://127.0.0.1:8545/", // Connect to the local Hardhat node
     //   chainId: 31337,
     // },
   },

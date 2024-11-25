@@ -5,7 +5,7 @@
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
-    "deploy:sepolia": "hardhat ignition deploy ./ignition/modules/MyContract.js --network sepolia"
+    "deploy": "hardhat ignition deploy ./ignition/scripts/deploy.js --network localhost"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
@@ -17,3 +17,4 @@
     "dotenv": "^16.4.5"
   }
 }
+
