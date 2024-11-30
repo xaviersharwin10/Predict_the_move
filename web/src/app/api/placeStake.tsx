@@ -48,7 +48,7 @@ export default function PlaceStakeModal({
       const parsedAmount = parseEther(stakeAmount);
 
       writeContract({
-        address: '0x304750552F501c4722290047eC40edEf698F7DE3',
+        address: '0xaFd8662EAE2e2bD45EC25360C789235780bF8F69',
         abi: abi,
         functionName: 'placeStake',
         args: [BigInt(marketId), prediction],

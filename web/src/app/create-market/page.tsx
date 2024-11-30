@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { useWriteContract, useReadContract } from "wagmi";
+import { useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { abi } from "../../data/abi";
-import { toast } from "@/components/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "@/components/hooks/use-toast"; 
 
 export default function CreateMarket() {
   const { address, isConnected } = useAccount();
@@ -21,94 +20,69 @@ export default function CreateMarket() {
 
   const [question, setQuestion] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [votedMarketsCount, setVotedMarketsCount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Get total number of markets
-  const { data: marketCount } = useReadContract({
-    abi,
-    address: "0x304750552F501c4722290047eC40edEf698F7DE3",
-    functionName: "getMarketCount",
-  });
-
-  // Effect to fetch voting stats
-  useEffect(() => {
-    const fetchUserVotingStats = async () => {
-      if (!isConnected || !address || !marketCount) return;
-
-      let votedCount = 0;
-      const totalMarkets = Number(marketCount);
-
-      for (let i = 1; i <= totalMarkets; i++) {
-        const { data } = await useReadContract({
-          abi,
-          address: "0x304750552F501c4722290047eC40edEf698F7DE3",
-          functionName: "getUserStake",
-          args: [BigInt(i), address],
-        });
-
-        if (data && data.stake > BigInt(0)) {
-          votedCount++;
-        }
-      }
-
-      setVotedMarketsCount(votedCount);
-    };
-
-    fetchUserVotingStats();
-  }, [address, isConnected, marketCount]);
-
-  // Handle the market creation process
   async function handleCreateMarket() {
+    // Reset previous error message
+    setErrorMessage("");
+
     if (!isConnected) {
-      console.error("Wallet not connected");
+      toast({
+        title: "Error",
+        description: "Please connect your wallet first.",
+        variant: "destructive",
+      });
       return;
     }
 
     const endDateTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
 
     try {
-      const hash = await createMarket({
+      await createMarket({
         abi,
-        address: "0x304750552F501c4722290047eC40edEf698F7DE3",
+        address: "0xaFd8662EAE2e2bD45EC25360C789235780bF8F69",
         functionName: "createMarket",
-        args: [question, BigInt(endDateTimestamp)],
+        args: [question, endDateTimestamp],
       });
-      console.log(hash);
-    } catch (error) {
-      console.error("Error creating market:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create market.",
-        variant: "destructive",
-      });
+    } catch (err: unknown) {
+      // Type guard to check if err is an Error object
+      if (err instanceof Error) {
+        // Extract the error message from the revert reason
+        const errorStr = err.message;
+        let matchedError = errorStr.match(/reason="([^"]+)"/);
+        
+        if (matchedError) {
+          const specificError = matchedError[1];
+          setErrorMessage(specificError);
+          
+          toast({
+            title: "Error",
+            description: specificError,
+            variant: "destructive",
+          });
+        } else {
+          // Fallback error handling
+          toast({
+            title: "Error",
+            description: err.message || "Failed to create market.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        // Handle case where err is not an Error object
+        toast({
+          title: "Error",
+          description: "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
+      
+      console.error("Error creating market:", err);
     }
   }
 
-  // Show success message after market creation
-  useEffect(() => {
-    if (isSuccess) {
-      toast({
-        title: "Market Created",
-      });
-      // Clear form after successful creation
-      setQuestion("");
-      setEndDate("");
-    }
-  }, [isSuccess]);
-
   return (
-    <div className="flex flex-col items-center justify-center space-y-6 sm:max-w-[525px]">
-      {isConnected && (
-        <Card className="w-full">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">Total Markets Voted In</div>
-              <div className="text-2xl font-bold">{votedMarketsCount}</div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
+    <div className="flex flex-col items-center justify-center sm:max-w-[525px]">
       <div className="w-2/3 space-y-6">
         <div className="flex flex-col space-y-1.5">
           <Label htmlFor="question">Market Question</Label>
@@ -130,16 +104,14 @@ export default function CreateMarket() {
           />
         </div>
 
-        <Button
-          onClick={handleCreateMarket}
-          className="w-full"
-          disabled={!isConnected || isPending}
-        >
-          {isPending ? "Creating..." : "Create Market"}
+        <Button onClick={handleCreateMarket} className="w-full">
+          Create Market
         </Button>
 
-        {isError && (
-          <div className="text-red-500 text-sm">Error: {error.message}</div>
+        {errorMessage && (
+          <div className="text-red-500 mt-2">
+            {errorMessage}
+          </div>
         )}
       </div>
     </div>

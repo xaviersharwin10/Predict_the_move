@@ -27,7 +27,7 @@ contract FinalPredictionMarket {
   event MarketStateChanged(uint256 indexed id, string action);
 
   function createMarket(string memory _question, uint256 _endDate) external {
-    require(userMarketStakeCount[msg.sender] >= 3, "Must stake in at least 3 markets before creating one");
+    require(marketCount < 3 || userMarketStakeCount[msg.sender] >= 3, "Must stake in at least 3 markets before creating one");
     require(_endDate > block.timestamp, "End date must be in the future");
 
     marketCount++;

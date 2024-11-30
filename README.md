@@ -22,4 +22,5 @@ Current contract deployed to
 
 Final PRediction Market contract deployed to 
 
-1) 0x12797d2FBD2aa84918d8eaD43C3859f205dD8D4D in airdao
+1) 0x7E0f6278AAAe8aA8d0472EE0b18dD336a1Fba383 in airdao
+2) 0xaFd8662EAE2e2bD45EC25360C789235780bF8F69 in airdao

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useWriteContract, useAccount, useReadContract, useWaitForTransactionReceipt } from 'wagmi';
+import { formatEther } from 'viem';
 import { abi } from "../../data/abi";
 import { Button } from "@/components/ui/button";
 
@@ -22,14 +23,14 @@ export default function ClaimWinningsButton({
   } | null>(null);
 
   const { data: potentialWinnings } = useReadContract({
-    address: "0x304750552F501c4722290047eC40edEf698F7DE3",
+    address: "0xaFd8662EAE2e2bD45EC25360C789235780bF8F69",
     abi: abi,
     functionName: "calculateWinnings",
     args: [BigInt(marketId), address],
   });
 
   const { data: userStakeData } = useReadContract({
-    address: "0x304750552F501c4722290047eC40edEf698F7DE3",
+    address: "0xaFd8662EAE2e2bD45EC25360C789235780bF8F69",
     abi: abi,
     functionName: "getUserStake",
     args: [BigInt(marketId), address],
@@ -62,7 +63,7 @@ export default function ClaimWinningsButton({
 
       // Use estimateGas before transaction
       const tx = await writeContract({
-        address: "0x304750552F501c4722290047eC40edEf698F7DE3",
+        address: "0xaFd8662EAE2e2bD45EC25360C789235780bF8F69",
         abi: abi,
         functionName: "claimWinnings",
         args: [BigInt(marketId)],
@@ -125,7 +126,7 @@ export default function ClaimWinningsButton({
       
       {potentialWinnings && Number(potentialWinnings) > BigInt(0) && (
         <div className="text-sm text-green-600 text-center mt-1">
-          Available winnings: {(Number(potentialWinnings))} ETH
+          Available winnings: {formatEther(Number(potentialWinnings))} ETH
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useWriteContract, useAccount } from 'wagmi';
 import { abi } from "../../data/abi";
+import { formatEther } from 'viem';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,7 +53,7 @@ export default function ResolveMarketButton({ market, onResolutionComplete }: Re
       });
 
       const tx = await writeContract({
-        address: "0x304750552F501c4722290047eC40edEf698F7DE3",
+        address: "0xaFd8662EAE2e2bD45EC25360C789235780bF8F69",
         abi: abi,
         functionName: "resolveMarket",
         args: [BigInt(market.id), _outcome],
@@ -122,11 +123,11 @@ export default function ResolveMarketButton({ market, onResolutionComplete }: Re
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Total Yes Stake:</span>
-                <span>{market.totalYesStake} ETH</span>
+                <span>{formatEther(market.totalYesStake)} ETH</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Total No Stake:</span>
-                <span>{market.totalNoStake} ETH</span>
+                <span>{formatEther(market.totalNoStake)} ETH</span>
               </div>
             </div>
           </div>
